@@ -1,21 +1,9 @@
 from discord.ext import commands
-from rcon.source import rcon
 
-from settings import RCON_HOST, RCON_PORT, RCON_PASSWORD, TOKEN
-
+from settings import TOKEN
+from utils import send_command
 
 bot = commands.Bot(command_prefix="?", description="A bot for the Discord server")
-
-
-async def _send_command(command: str) -> str:
-    """
-    Sends a command to the RCON server and returns the response.
-    """
-    response = await rcon(
-        *command.split(), host=RCON_HOST, port=int(RCON_PORT), passwd=RCON_PASSWORD
-    )
-
-    return response
 
 
 @bot.event
@@ -26,12 +14,9 @@ async def on_ready():
 @bot.command()
 async def whitelist(ctx, username: str):
     """Whitelists a user."""
-    command = f"whitelist add {username}".split()
-    response = await rcon(
-        *command, host=RCON_HOST, port=int(RCON_PORT), passwd=RCON_PASSWORD
-    )
+    response = await send_command(f"whitelist add {username}")
     print(f"Whitelisting {username}")
-    await ctx.send("Whitelisting...")
+    await ctx.send(response)
 
 
 bot.run(TOKEN)
