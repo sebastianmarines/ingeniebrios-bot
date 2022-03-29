@@ -1,0 +1,23 @@
+services:
+  bot:
+    build: .
+    depends_on: 
+      - server
+    environment:
+      - RCON_HOST=server
+      - RCON_PORT=25575
+      - RCON_PASSWORD=test
+    env_file:
+      - .env
+  server:
+    image: marctv/minecraft-papermc-server:1.18
+    ports:
+      - "25565:25565"
+      - "25575:25575"
+    environment:
+      - MEMORYSIZE=1G
+    volumes:
+      - ./world:/data:rw
+      - ./data/server.properties:/data/server.properties:ro
+
+    
